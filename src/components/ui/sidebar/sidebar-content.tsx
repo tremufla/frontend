@@ -3,7 +3,7 @@ import SidebarOption from "./sidebar-button";
 const options = [
   { name: "🔍 Mapa de Pulverizações", link: "/map" },
   { name: "📅 Calendário de Pulverizações", link: "/schedule" },
-  { name: "⚙️ Meus Locais", link: "/my-places" },
+  { name: "⚙️ Minhas propriedades", link: "/property" },
 ];
 
 const SidebarContent: React.FC = () => {
