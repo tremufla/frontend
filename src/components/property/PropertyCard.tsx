@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { PropertyModel } from "@/domain/models/property-model"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"

@@ -1,26 +1,11 @@
-"use client"
+import * as React from 'react';
+import { PropertyCard } from '@/components/property/PropertyCard';
+import { makeRemoteGetAllProperties } from '@/main/factories/usecases/remote-get-all-properties-factory';
 
-import * as React from "react"
-import { faker } from "@faker-js/faker"
-import { PropertyModel } from "@/domain/models/property-model"
-import { PropertyCard } from "@/components/property/PropertyCard"
+export async function PropertyList() {
+  const usecase = makeRemoteGetAllProperties();
 
-export function PropertyList() {
-  const [properties, setProperties] = React.useState<PropertyModel[]>([])
-
-  React.useEffect(() => {
-    // gerar alguns dados de exemplo localmente
-    const items: PropertyModel[] = Array.from({ length: 6 }).map(() => ({
-      id: faker.string.uuid(),
-      name: faker.company.name(),
-      city: faker.location.city(),
-      state: faker.location.state(),
-      longitude: Number(faker.location.longitude()),
-      latitude: Number(faker.location.latitude()),
-    }))
-
-    setProperties(items)
-  }, [])
+  const properties = await usecase.getAll();
 
   return (
     <div className="p-6">
@@ -30,5 +15,5 @@ export function PropertyList() {
         ))}
       </div>
     </div>
-  )
+  );
 }
