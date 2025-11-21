@@ -19,7 +19,7 @@ export function PropertyCard({ property }: Props) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm">{property.city ?? "-"}, {property.state ?? "-"}</p>
+        <p className="text-sm">{property.city}, {property.state}</p>
       </CardContent>
     </Card>
   )
