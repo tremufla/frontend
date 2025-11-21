@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --env-file .env",
+    "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start --env-file .env",
+    "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
     "test": "NODE_OPTIONS='-r ts-node/register' jest --config ./jest.config.ts"
