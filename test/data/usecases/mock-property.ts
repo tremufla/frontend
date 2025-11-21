@@ -4,6 +4,8 @@ import { faker } from '@faker-js/faker'
 export const mockProperty = (): PropertyModel => ({
   id: faker.string.uuid(),
   name: faker.company.name(),
+  city: faker.location.city(),
+  state: faker.location.state(),
   longitude: faker.location.longitude(),
   latitude: faker.location.latitude()
 })
