@@ -7,6 +7,6 @@ import { PropertyModel } from '@/domain/models/property-model'
 
 export const makeRemoteGetAllProperties = (): GetAllProperties =>
   new RemoteGetAllProperties(
-    makeApiUrl(apiRoutes.propertyLean),
+    makeApiUrl(apiRoutes.listAllProperties),
     makeAxiosHttpClient<void, PropertyModel[]>()
   )
