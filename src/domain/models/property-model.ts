@@ -17,3 +17,5 @@ export type PropertyModel = {
 
   longitude: number;
 }
+
+export type CreatePropertyParams = Omit<PropertyModel, 'id'>
