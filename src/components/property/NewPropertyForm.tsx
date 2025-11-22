@@ -54,32 +54,26 @@ export default function NewPropertyForm() {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-
     try {
-      const res = await fetch('/api/properties', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          city: data.city ?? '',
-          state: data.state ?? '',
-          latitude: Number(data.latitude) || 0,
-          longitude: Number(data.longitude) || 0,
-        }),
-      })
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => null)
-        throw new Error(errBody?.error || 'Failed to create property')
+      const payload = {
+        name: data.name,
+        city: data.city ?? '',
+        state: data.state ?? '',
+        latitude: Number(data.latitude) || 0,
+        longitude: Number(data.longitude) || 0,
       }
 
-      router.refresh();
-      setOpen(false);
-      reset();
+      // delegated API call
+      const { createProperty } = await import('@/lib/api/propertyApi')
+      await createProperty(payload)
+
+      router.refresh()
+      setOpen(false)
+      reset()
     } catch (err) {
-      console.error(err);
+      console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
