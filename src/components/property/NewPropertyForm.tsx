@@ -26,9 +26,16 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function NewPropertyForm() {
-  const router = useRouter();
-  const [open, setOpen] = useState(false);
+type Props = {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  hideTrigger?: boolean
+}
+
+export default function NewPropertyForm({ open: controlledOpen, onOpenChange, hideTrigger = false }: Props) {
+  const router = useRouter()
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -49,11 +56,16 @@ export default function NewPropertyForm() {
   });
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
+
+  const handleOpenChange = (value: boolean) => {
+    if (onOpenChange) return onOpenChange(value)
+    setInternalOpen(value)
+  }
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true);
+  setLoading(true)
     try {
       const payload = {
         name: data.name,
@@ -67,8 +79,8 @@ export default function NewPropertyForm() {
       const { createProperty } = await import('@/lib/api/propertyApi')
       await createProperty(payload)
 
-      router.refresh()
-      setOpen(false)
+  router.refresh()
+  handleOpenChange(false)
       reset()
     } catch (err) {
       console.error(err)
@@ -77,14 +89,16 @@ export default function NewPropertyForm() {
     }
   }
 
-  if (!mounted) return null;
+  if (!mounted) return null
 
   return (
     <div className="mb-4">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>
-          <Button>Nova propriedade</Button>
-        </DialogTrigger>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        {!hideTrigger && (
+          <DialogTrigger>
+            <Button>Nova propriedade</Button>
+          </DialogTrigger>
+        )}
 
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
@@ -142,7 +156,7 @@ export default function NewPropertyForm() {
             </div>
 
             <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)} type="button">
+              <Button variant="outline" onClick={() => handleOpenChange(false)} type="button">
                 Cancelar
               </Button>
               <Button type="submit" disabled={loading}>
