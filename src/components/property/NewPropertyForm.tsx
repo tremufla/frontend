@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { makeRemoteCreateProperty } from '@/main/factories/usecases/remote-create-property-factory';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Field, FieldLabel, FieldContent } from '@/components/ui/field';
+import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field';
 import Dialog, {
   DialogTrigger,
   DialogContent,
@@ -14,48 +17,60 @@ import Dialog, {
   DialogClose,
   DialogFooter,
 } from '@/components/ui/dialog';
+const schema = z.object({
+  name: z.string().min(1, { message: 'Nome obrigatório' }),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  latitude: z.preprocess((v) => (v === '' || v === undefined ? undefined : Number(v)), z.number().min(-90).max(90)),
+  longitude: z.preprocess((v) => (v === '' || v === undefined ? undefined : Number(v)), z.number().min(-180).max(180)),
+});
+
+type FormData = z.infer<typeof schema>;
 
 export default function NewPropertyForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [name, setName] = useState('');
-  const [city, setCity] = useState('');
-  const [stateVal, setStateVal] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: '',
+      city: '',
+      state: '',
+      latitude: 0 as unknown as number,
+      longitude: 0 as unknown as number,
+    },
+  });
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
 
-    const usecase = makeRemoteCreateProperty();
+    const createProperty = makeRemoteCreateProperty()
 
     try {
-      await usecase.create({
-        name,
-        city,
-        state: stateVal,
-        latitude: Number(latitude) || 0,
-        longitude: Number(longitude) || 0,
-      });
+      await createProperty.create({
+        name: data.name,
+        city: data.city ?? '',
+        state: data.state ?? '',
+        latitude: Number(data.latitude) || 0,
+        longitude: Number(data.longitude) || 0,
+      })
 
-      // refresh server component list
       router.refresh();
       setOpen(false);
-      // reset fields
-      setName('');
-      setCity('');
-      setStateVal('');
-      setLatitude('');
-      setLongitude('');
+      reset();
     } catch (err) {
-      // TODO: mostrar feedback de erro
       console.error(err);
     } finally {
       setLoading(false);
@@ -72,7 +87,7 @@ export default function NewPropertyForm() {
         </DialogTrigger>
 
         <DialogContent>
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             <DialogHeader>
               <DialogTitle>Nova propriedade</DialogTitle>
               <DialogClose>
@@ -89,21 +104,22 @@ export default function NewPropertyForm() {
             <Field>
               <FieldLabel>Nome</FieldLabel>
               <FieldContent>
-                <Input required value={name} onChange={(e) => setName(e.target.value)} />
+                <Input {...register('name')} />
+                {errors.name && <FieldError>{errors.name.message}</FieldError>}
               </FieldContent>
             </Field>
 
             <Field>
               <FieldLabel>Cidade</FieldLabel>
               <FieldContent>
-                <Input value={city} onChange={(e) => setCity(e.target.value)} />
+                <Input {...register('city')} />
               </FieldContent>
             </Field>
 
             <Field>
               <FieldLabel>Estado</FieldLabel>
               <FieldContent>
-                <Input value={stateVal} onChange={(e) => setStateVal(e.target.value)} />
+                <Input {...register('state')} />
               </FieldContent>
             </Field>
 
@@ -111,14 +127,16 @@ export default function NewPropertyForm() {
               <Field>
                 <FieldLabel>Latitude</FieldLabel>
                 <FieldContent>
-                  <Input value={latitude} onChange={(e) => setLatitude(e.target.value)} />
+                  <Input {...register('latitude', { valueAsNumber: false })} />
+                  {errors.latitude && <FieldError>{errors.latitude.message}</FieldError>}
                 </FieldContent>
               </Field>
 
               <Field>
                 <FieldLabel>Longitude</FieldLabel>
                 <FieldContent>
-                  <Input value={longitude} onChange={(e) => setLongitude(e.target.value)} />
+                  <Input {...register('longitude', { valueAsNumber: false })} />
+                  {errors.longitude && <FieldError>{errors.longitude.message}</FieldError>}
                 </FieldContent>
               </Field>
             </div>
