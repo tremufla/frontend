@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { makeRemoteCreateProperty } from '@/main/factories/usecases/remote-create-property-factory';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field';
@@ -56,16 +55,23 @@ export default function NewPropertyForm() {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
 
-    const createProperty = makeRemoteCreateProperty()
-
     try {
-      await createProperty.create({
-        name: data.name,
-        city: data.city ?? '',
-        state: data.state ?? '',
-        latitude: Number(data.latitude) || 0,
-        longitude: Number(data.longitude) || 0,
+      const res = await fetch('/api/properties', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name,
+          city: data.city ?? '',
+          state: data.state ?? '',
+          latitude: Number(data.latitude) || 0,
+          longitude: Number(data.longitude) || 0,
+        }),
       })
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null)
+        throw new Error(errBody?.error || 'Failed to create property')
+      }
 
       router.refresh();
       setOpen(false);
@@ -75,7 +81,7 @@ export default function NewPropertyForm() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   if (!mounted) return null;
 
