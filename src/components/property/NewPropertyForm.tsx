@@ -27,15 +27,15 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 type Props = {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-  hideTrigger?: boolean
-}
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+};
 
 export default function NewPropertyForm({ open: controlledOpen, onOpenChange, hideTrigger = false }: Props) {
-  const router = useRouter()
-  const [internalOpen, setInternalOpen] = useState(false)
-  const open = controlledOpen ?? internalOpen
+  const router = useRouter();
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -56,16 +56,16 @@ export default function NewPropertyForm({ open: controlledOpen, onOpenChange, hi
   });
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const handleOpenChange = (value: boolean) => {
-    if (onOpenChange) return onOpenChange(value)
-    setInternalOpen(value)
-  }
+    if (onOpenChange) return onOpenChange(value);
+    setInternalOpen(value);
+  };
 
   const onSubmit = async (data: FormData) => {
-  setLoading(true)
+    setLoading(true);
     try {
       const payload = {
         name: data.name,
@@ -73,23 +73,22 @@ export default function NewPropertyForm({ open: controlledOpen, onOpenChange, hi
         state: data.state ?? '',
         latitude: Number(data.latitude) || 0,
         longitude: Number(data.longitude) || 0,
-      }
+      };
 
-      // delegated API call
-      const { createProperty } = await import('@/lib/api/propertyApi')
-      await createProperty(payload)
+      const { createProperty } = await import('@/lib/api/propertyApi');
+      await createProperty(payload);
 
-  router.refresh()
-  handleOpenChange(false)
-      reset()
+      router.refresh();
+      handleOpenChange(false);
+      reset();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <div className="mb-4">
@@ -116,7 +115,7 @@ export default function NewPropertyForm({ open: controlledOpen, onOpenChange, hi
             </div>
 
             <Field>
-              <FieldLabel>Nome</FieldLabel>
+              <FieldLabel>Nome da propriedade</FieldLabel>
               <FieldContent>
                 <Input {...register('name')} />
                 {errors.name && <FieldError>{errors.name.message}</FieldError>}
