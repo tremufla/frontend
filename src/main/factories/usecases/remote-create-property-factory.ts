@@ -7,6 +7,6 @@ import { CreatePropertyParams, PropertyModel } from '@/domain/models/property-mo
 
 export const makeRemoteCreateProperty = (): CreateProperty =>
   new RemoteCreateProperty(
-        makeApiUrl(apiRoutes.listAllProperties),
+        makeApiUrl(apiRoutes.createProperty),
         makeAxiosHttpClient<CreatePropertyParams, PropertyModel>()
   )
