@@ -1,7 +1,7 @@
 export const apiRoutes = {
-  findPropertyById: "/property/:id",
-  updateProperty: "/property/:id",
   createProperty: "/property",
+  findPropertyById: "/property/:id",
   listAllProperties: "/property",
   propertyLean: "/property/lean",
+  updateProperty: "/property/:id",
 }
