@@ -7,6 +7,6 @@ import { PropertyModel } from '@/domain/models/property-model'
 
 export const makeRemoteFindPropertyById = (): FindPropertyById =>
   new RemoteFindPropertyById(
-    makeApiUrl(apiRoutes.listAllProperties),
+    makeApiUrl(apiRoutes.findPropertyById),
     makeAxiosHttpClient<void, PropertyModel>()
   )
