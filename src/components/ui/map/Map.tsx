@@ -1,13 +1,19 @@
+"use client";
+
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { CenterMap } from "./CenterMap";
 import { usePropertyStore } from "@/store/property-store";
-import TractorIcon from "./TractorIcon";
 import FarmIcon from "./FarmIcon";
 import L, { LatLng } from "leaflet";
 import { useEffect, useState } from "react";
 import FarmerIcon from "./FarmerIcon";
+import { PropertyModel } from '@/domain/models/property-model'
 
 type Coordinates = [number, number];
+
+type Props = {
+  properties?: PropertyModel[]
+}
 
 const HandleMapClick = () => {
   const { coordinates } = usePropertyStore();
@@ -44,8 +50,8 @@ const HandleMapClick = () => {
   );
 };
 
-export default function Map() {
-  const { coordinates } = usePropertyStore();
+export default function Map({ properties }: Props) {
+  const { coordinates } = usePropertyStore()
 
   return (
     <div className="relative h-[calc(100vh-theme(spacing.32))]">
@@ -59,21 +65,24 @@ export default function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Marker
-          key={1}
-          position={[-21.2, -44.9]}
-          icon={TractorIcon({ type: "safe" })}
-        >
-          <Popup>Local selecionado</Popup>
-        </Marker>
         {coordinates && (
           <>
-            <Marker key={0} position={coordinates} icon={FarmIcon}>
+            <Marker key={0} position={coordinates} icon={FarmerIcon}>
               <Popup>Local selecionado</Popup>
             </Marker>
             <CenterMap coordinates={coordinates} />
           </>
         )}
+        {properties?.map((p) => (
+          <Marker key={p.id} position={[p.latitude, p.longitude]} icon={FarmIcon}>
+            <Popup>
+              <div className="text-sm">
+                <div className="font-semibold">{p.name}</div>
+                <div>{p.city}, {p.state}</div>
+              </div>
+            </Popup>
+          </Marker>
+        ))}
         <HandleMapClick />
       </MapContainer>
     </div>
