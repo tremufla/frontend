@@ -11,14 +11,14 @@ const FarmerIcon: L.DivIcon = new L.DivIcon({
       backgroundColor: '#1e90ff',
       border: '2px solid white',
       borderRadius: '50%',
-      width: '40px',
-      height: '40px',
+      width: '25px',
+      height: '25px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       boxShadow: '0 0 5px rgba(0,0,0,0.5)'
     }}>
-      <GiFarmer color="white" size={20} />
+      <GiFarmer color="white" size={10} />
     </div>
   ),
   className: '',
