@@ -22,9 +22,21 @@ interface SelectLocationProps {
 const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
   const { setProperty, setCoordinates } = usePropertyStore();
   const [locationSelected, setLocationSelected] = useState<string>("");
+  const [currentLocation, setCurrentLocation] = useState<{
+    id: string;
+    name: string;
+    coordinates: { latitude: number; longitude: number };
+  } | null>(null);
 
   useEffect(() => {
-    if (locations.length > 0) {
+    if (currentLocation) {
+      setProperty(currentLocation.id);
+      setLocationSelected(currentLocation.id);
+      setCoordinates([
+        currentLocation.coordinates.latitude,
+        currentLocation.coordinates.longitude,
+      ]);
+    } else if (locations.length > 0) {
       const firstLocation = locations[0];
       setProperty(firstLocation.id);
       setLocationSelected(firstLocation.id);
@@ -33,9 +45,47 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
         firstLocation.coordinates.longitude,
       ]);
     }
-  }, [locations, setProperty, setCoordinates]);
+  }, [locations, setProperty, setCoordinates, currentLocation]);
+
+  // get browser geolocation and set as first option when available
+  useEffect(() => {
+    if (!navigator?.geolocation) return;
+
+    let mounted = true;
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        if (!mounted) return;
+        const { latitude, longitude } = pos.coords;
+        setCurrentLocation({
+          id: "current-location",
+          name: "Minha localização",
+          coordinates: { latitude, longitude },
+        });
+      },
+      () => {
+        // ignore errors (permission denied or unavailable)
+      },
+      { enableHighAccuracy: true, maximumAge: 1000 * 60 * 5 }
+    );
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleChange = (value: string) => {
+    // allow selecting current-location or any property
+    if (value === "current-location" && currentLocation) {
+      setProperty(currentLocation.id);
+      setLocationSelected(currentLocation.id);
+      setCoordinates([
+        currentLocation.coordinates.latitude,
+        currentLocation.coordinates.longitude,
+      ]);
+      return;
+    }
+
     const selectedLocation = locations.find((location) => location.id === value);
 
     const latitude = selectedLocation?.coordinates.latitude ?? 0;
@@ -55,9 +105,18 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
         <SelectValue placeholder={"Escolha uma localização"} />
       </SelectTrigger>
       <SelectContent>
-        {locations.map((location, index) => (
+        {currentLocation && (
           <SelectItem
-            key={index}
+            key={currentLocation.id}
+            data-coordinates={currentLocation.coordinates}
+            value={currentLocation.id}
+          >
+            {currentLocation.name}
+          </SelectItem>
+        )}
+        {locations.map((location) => (
+          <SelectItem
+            key={location.id}
             data-coordinates={location.coordinates}
             value={location.id}
           >
