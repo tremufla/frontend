@@ -3,7 +3,7 @@ import { create } from "zustand";
 type PropertyStore = {
   property: string | null;
   coordinates: [number, number] | null;
-  setProperty: (value: string) => void;
+  setProperty: (value: string | null) => void;
   setCoordinates: (value: [number, number]) => void;
 };
 

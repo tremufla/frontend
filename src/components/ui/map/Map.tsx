@@ -5,49 +5,38 @@ import { CenterMap } from "./CenterMap";
 import { usePropertyStore } from "@/store/property-store";
 import FarmIcon from "./FarmIcon";
 import L, { LatLng } from "leaflet";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FarmerIcon from "./FarmerIcon";
 import { PropertyModel } from '@/domain/models/property-model'
-
-type Coordinates = [number, number];
 
 type Props = {
   properties?: PropertyModel[]
 }
 
 const HandleMapClick = () => {
-  const { coordinates } = usePropertyStore();
-
-  const [markerPosition, setMarkerPosition] = useState<Coordinates | null>(coordinates);
+  const { setCoordinates, setProperty } = usePropertyStore();
 
   const map = useMap();
 
-  const handleClick = (e: L.LeafletMouseEvent) => {
-    const { lat, lng }: LatLng = e.latlng;
-    setMarkerPosition([lat, lng]);
-  };
-
   useEffect(() => {
-    if (map) {
-      map.on('click', handleClick);
-    }
+    if (!map) return;
+
+    const handleClick = (e: L.LeafletMouseEvent) => {
+      const { lat, lng }: LatLng = e.latlng;
+      // When user clicks on the map, move the farmer icon to the clicked location
+      // and clear the selected property so the select no longer points to "Minha localização"
+      setProperty(null);
+      setCoordinates([lat, lng]);
+    };
+
+    map.on('click', handleClick);
 
     return () => {
-      if (map) {
-        map.off('click', handleClick);
-      }
+      map.off('click', handleClick);
     };
-  }, [map]);
+  }, [map, setProperty, setCoordinates]);
 
-  return (
-    <>
-      {markerPosition && (
-        <Marker position={markerPosition} icon={FarmerIcon}>
-          <Popup>{`Latitude: ${markerPosition[0]} - Longitude: ${markerPosition[1]}`}</Popup>
-        </Marker>
-      )}
-    </>
-  );
+  return null;
 };
 
 export default function Map({ properties }: Props) {
