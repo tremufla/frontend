@@ -4,7 +4,7 @@ import MapClient from '@/components/map/MapClient'
 import { makeRemoteGetAllProperties } from '@/main/factories/usecases/remote-get-all-properties-factory'
 import { PropertyModel } from '@/domain/models/property-model'
 
-export const revalidate = 0 // always up-to-date during development
+export const revalidate = 0
 
 async function fetchProperties(): Promise<PropertyModel[]> {
   try {
