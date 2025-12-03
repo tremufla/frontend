@@ -21,10 +21,8 @@ const HandleMapClick = () => {
   useEffect(() => {
     if (!map) return;
 
-    const handleClick = (e: L.LeafletMouseEvent) => {
-      const { lat, lng }: LatLng = e.latlng;
-      // When user clicks on the map, move the farmer icon to the clicked location
-      // and clear the selected property so the select no longer points to "Minha localização"
+    const handleClick = (event: L.LeafletMouseEvent) => {
+      const { lat, lng }: LatLng = event.latlng;
       setProperty(null);
       setCoordinates([lat, lng]);
     };
@@ -62,12 +60,12 @@ export default function Map({ properties }: Props) {
             <CenterMap coordinates={coordinates} />
           </>
         )}
-        {properties?.map((p) => (
-          <Marker key={p.id} position={[p.latitude, p.longitude]} icon={FarmIcon}>
+        {properties?.map((property) => (
+          <Marker key={property.id} position={[property.latitude, property.longitude]} icon={FarmIcon}>
             <Popup>
               <div className="text-sm">
-                <div className="font-semibold">{p.name}</div>
-                <div>{p.city}, {p.state}</div>
+                <div className="font-semibold">{property.name}</div>
+                <div>{property.city}, {property.state}</div>
               </div>
             </Popup>
           </Marker>
