@@ -28,7 +28,7 @@ export default async function MapSSRPage() {
 
   return (
     <main className="p-4">
-      <Header title="Mapa (SSR) de Pulverizações">
+      <Header title="Mapa de Pulverizações">
         <HeaderClient locations={locations} />
       </Header>
 
