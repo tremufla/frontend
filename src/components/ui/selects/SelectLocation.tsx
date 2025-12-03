@@ -47,7 +47,6 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
     }
   }, [locations, setProperty, setCoordinates, currentLocation]);
 
-  // get browser geolocation and set as first option when available
   useEffect(() => {
     if (!navigator?.geolocation) return;
 
@@ -63,9 +62,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
           coordinates: { latitude, longitude },
         });
       },
-      () => {
-        // ignore errors (permission denied or unavailable)
-      },
+      () => { },
       { enableHighAccuracy: true, maximumAge: 1000 * 60 * 5 }
     );
 
@@ -75,7 +72,6 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
   }, []);
 
   const handleChange = (value: string) => {
-    // allow selecting current-location or any property
     if (value === "current-location" && currentLocation) {
       setProperty(currentLocation.id);
       setLocationSelected(currentLocation.id);
