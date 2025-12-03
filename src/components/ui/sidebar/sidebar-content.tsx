@@ -1,7 +1,7 @@
 import SidebarOption from "./sidebar-button";
 
 const options = [
-  { name: "🔍 Mapa de Pulverizações", link: "/map" },
+  { name: "🔍 Mapa de Pulverizações", link: "/map-ssr" },
   { name: "📅 Calendário de Pulverizações", link: "/schedule" },
   { name: "⚙️ Minhas propriedades", link: "/property" },
 ];
