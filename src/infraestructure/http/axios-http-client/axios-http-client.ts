@@ -8,7 +8,7 @@ export class AxiosHttpClient<Req = unknown, Res = unknown>
   implements HttpGetClient<Req, Res>, HttpPostClient<Req, Res>, HttpPatchClient<Req, Res>
 {
   async get(params: HttpGetParams<Req>): Promise<HttpResponse<Res>> {
-    const httpResponse = await axios.get(params.url);
+    const httpResponse = await axios.get(params.url, { data: params.body as unknown });
 
     return {
       statusCode: httpResponse.status,
