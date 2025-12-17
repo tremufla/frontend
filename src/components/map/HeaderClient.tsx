@@ -4,7 +4,7 @@ import React from 'react'
 import SelectLocation from '@/components/ui/selects/SelectLocation'
 import NewPulverizationPopover from '@/components/ui/popovers/NewPulverizationPopover'
 
-type Location = {
+export type Location = {
   id: string
   name: string
   coordinates: { latitude: number; longitude: number }
