@@ -1,9 +1,9 @@
 import SidebarOption from "./sidebar-button";
 
 const options = [
-  { name: "🔍 Mapa de Pulverizações", link: "/map-ssr" },
-  { name: "📅 Calendário de Pulverizações", link: "/schedule" },
-  { name: "⚙️ Minhas propriedades", link: "/property" },
+  { icon: "🔍", name: "Mapa de Pulverizações", link: "/map-ssr" },
+  { icon: "📅", name: "Calendário de Pulverizações", link: "/schedule" },
+  { icon: "⚙️", name: "Minhas propriedades", link: "/property" },
 ];
 
 const SidebarContent: React.FC = () => {
