@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 interface SideBarOptionProps {
   options: {
+    icon: string;
     name: string;
     link: string;
   }[];
@@ -17,7 +18,7 @@ const SidebarOption: React.FC<SideBarOptionProps> = ({ options }) => {
     <>
       {options.map((option) => (
         <Link key={option.link} href={option.link}>
-          <div className={getClass(option.link)}>{option.name}</div>
+          <div className={getClass(option.link)}>{option.icon} {option.name}</div>
         </Link>
       ))}
     </>
