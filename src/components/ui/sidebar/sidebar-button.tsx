@@ -1,42 +1,48 @@
-"use client";
+'use client';
 
-import { Icon, IconNode } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Map, Calendar, MapPin, type LucideIcon } from 'lucide-react';
 
 interface SideBarOptionProps {
   options: {
-    icon: string | IconNode;
+    icon: string;
     name: string;
     link: string;
   }[];
 }
+
+const iconMap: Record<string, LucideIcon> = {
+  'map': Map,
+  'calendar': Calendar,
+  'map-pin': MapPin,
+};
 
 const SidebarOption: React.FC<SideBarOptionProps> = ({ options }) => {
   const pathname = usePathname();
 
   return (
     <>
-      {options.map((option) => (
-        <Link key={option.link} href={option.link}>
-          <div className={getClass(option.link)}>{getIconComponent(option.icon)} {option.name}</div>
-        </Link>
-      ))}
+      {options.map(({ icon, name, link }) => {
+        const Icon = iconMap[icon] ?? Map;
+        return (
+          <Link key={link} href={link}>
+            <div className={getClass(link)}>
+              <Icon className="mr-2" />
+              {name}
+            </div>
+          </Link>
+        );
+      })}
     </>
   );
 
   function getClass(path: string) {
-    const baseClass = "flex items-center w-full p-3 rounded-md transition-colors";
-    const activeClass = "bg-gray-200 font-bold";
-    const inactiveClass = "hover:bg-gray-100";
+    const baseClass = 'flex items-center w-full p-3 rounded-md transition-colors';
+    const activeClass = 'bg-gray-200 font-bold';
+    const inactiveClass = 'hover:bg-gray-100';
 
     return `${baseClass} ${pathname === path ? activeClass : inactiveClass}`;
-  }
-
-  function getIconComponent(icon: string | IconNode) {
-    if (typeof icon === "string") return <span>{icon}</span>;
-
-    return <Icon iconNode={icon} />;
   }
 };
 
