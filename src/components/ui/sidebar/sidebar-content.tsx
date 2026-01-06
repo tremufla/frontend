@@ -3,7 +3,9 @@ import SidebarOption from "./sidebar-button";
 const options = [
   { icon: "map", name: "Mapa de Pulverizações", link: "/map-ssr" },
   { icon: "calendar", name: "Calendário de Pulverizações", link: "/schedule" },
-  { icon: "map-pin", name: "Minhas propriedades", link: "/property" },
+  { icon: "map-pin", name: "Meus locais", link: "/property" },
+  { icon: "info", name: "Sobre o T.R.E.M", link: "/property" },
+  { icon: "user-round", name: "Minha conta", link: "/property" },
 ];
 
 const SidebarContent: React.FC = () => {

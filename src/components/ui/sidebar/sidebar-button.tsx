@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Map, Calendar, MapPin, type LucideIcon } from 'lucide-react';
+import { Map, Calendar, type LucideIcon, MapPinned, Info, UserRound } from 'lucide-react';
 
 interface SideBarOptionProps {
   options: {
@@ -15,7 +15,9 @@ interface SideBarOptionProps {
 const iconMap: Record<string, LucideIcon> = {
   'map': Map,
   'calendar': Calendar,
-  'map-pin': MapPin,
+  'map-pinned': MapPinned,
+  'info': Info,
+  'user-round': UserRound,
 };
 
 const SidebarOption: React.FC<SideBarOptionProps> = ({ options }) => {
