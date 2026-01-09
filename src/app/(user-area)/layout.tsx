@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
-import MainContent from "@/components/ui/content/main-content";
-import SidebarContent from "@/components/ui/sidebar/sidebar-content";
+import { ReactNode } from 'react';
+import SidebarContent from '@/components/ui/sidebar/sidebar-content';
+import Header from '@/components/ui/header/new-header';
 
 type LayoutProps = {
   children?: ReactNode;
@@ -11,21 +11,21 @@ type LayoutPropsExtended = {
   header?: ReactNode;
 };
 
-export default function UserAreaLayout(
-  props: LayoutProps | LayoutPropsExtended
-) {
-  const { children, header } = {
-    ...props,
-    header: undefined,
-  };
+export default function UserAreaLayout(props: LayoutProps | LayoutPropsExtended) {
+    const { children } = { ...props };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="flex h-screen overflow-hidden">
       <SidebarContent />
-      <div className="w-full md:w-3/4 p-4 flex flex-col gap-6">
-        {header}
-        <MainContent>{children}</MainContent>
+
+      <div className="flex flex-col flex-1">
+        <Header />
+
+        <main className="flex-1 overflow-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );
 }
+
