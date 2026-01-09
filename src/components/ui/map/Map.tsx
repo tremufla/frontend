@@ -58,7 +58,7 @@ export default function Map({ properties }: Props) {
   const { coordinates } = usePropertyStore();
 
   return (
-    <div className="relative h-[calc(100vh-theme(spacing.32))]">
+    <div className="h-full">
       <MapContainer
         center={coordinates ?? [0, 0]}
         zoom={13}
