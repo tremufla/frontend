@@ -4,7 +4,8 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { CenterMap } from './CenterMap';
 import { usePropertyStore } from '@/store/property-store';
 import FarmIcon from './FarmIcon';
-import L, { LatLng } from 'leaflet';
+import * as L from 'leaflet';
+import type { LatLng } from 'leaflet';
 import { useEffect } from 'react';
 import FarmerIcon from './FarmerIcon';
 import { PropertyModel } from '@/domain/models/property-model';
@@ -57,6 +58,67 @@ const renderPropertyMarkers = (properties?: PropertyModel[]) => {
 export default function Map({ properties }: Props) {
   const { coordinates } = usePropertyStore();
 
+  const MapButtons = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (!map) return;
+
+      // Criar container e botões diretamente no DOM do mapa para evitar problemas de tipagem
+      const container = document.createElement('div');
+      container.className = 'leaflet-bar custom-map-buttons';
+      // push below the default zoom control (adjust as needed)
+      container.style.marginTop = '100px';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      // adiciona espaçamento entre os botões
+      container.style.gap = '28px';
+
+      const makeButton = (label: string, title: string, onClick: () => void) => {
+        const a = document.createElement('a');
+        a.innerHTML = label;
+        a.href = '#';
+        a.title = title;
+        a.style.cursor = 'pointer';
+        a.style.display = 'block';
+        a.style.padding = '6px 8px';
+        a.style.textAlign = 'center';
+        a.style.background = 'white';
+        a.style.borderBottom = '1px solid rgba(0,0,0,0.1)';
+
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          onClick();
+        });
+
+        return a;
+      };
+
+      // Example buttons (change labels/actions as needed)
+      const btn1 = makeButton('Btn 1', 'Button 1', () => {
+        console.log('Btn 1 clicked');
+      });
+      const btn2 = makeButton('Btn 2', 'Button 2', () => {
+        console.log('Btn 2 clicked');
+      });
+
+      container.appendChild(btn1);
+      container.appendChild(btn2);
+
+      // Tenta anexar no canto superior-esquerdo do mapa (fallback para o container do mapa)
+      const mapContainer = map.getContainer();
+      const corner = mapContainer.querySelector('.leaflet-top.leaflet-left') as HTMLElement | null;
+      const parent = corner ?? mapContainer;
+      parent.appendChild(container);
+
+      return () => {
+        container.remove();
+      };
+    }, [map]);
+
+    return null;
+  };
+
   return (
     <div className="h-full">
       <MapContainer
@@ -79,6 +141,7 @@ export default function Map({ properties }: Props) {
         )}
         {renderPropertyMarkers(properties)}
         <HandleMapClick />
+        <MapButtons />
       </MapContainer>
     </div>
   );
