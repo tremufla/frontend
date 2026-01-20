@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import SidebarOption from './sidebar-button';
+import { Menu } from 'lucide-react';
 
 const options = [
   { icon: 'map', name: 'Mapa de Pulverizações', link: '/map-ssr' },
@@ -12,10 +13,18 @@ const options = [
 const SidebarContent: React.FC = () => {
   return (
     <div className="hidden md:block w-1/5 bg-white shadow-md p-4">
-      <div className="text-stone-800 text-lg p-3 rounded-md flex items-center">
-        <Image src="/logo-completo.svg" alt="T.R.E.M. logo" width={194} height={28} />
-      </div>
-      <nav className="mt- 4 space-y-2">
+      <nav className="space-y-2">
+        <div>
+          <button
+        type="button"
+        className="flex items-center w-full gap-3 px-4 py-3 rounded-lg transition-colors whitespace-nowrap text-stone-700 min-h-[40px] cursor-default"
+          >
+        <Menu className="w-5 h-5 shrink-0 cursor-pointer" />
+        <div className="flex items-center h-5">
+          <Image src="/logo-completo.svg" alt="T.R.E.M. logo" width={160} height={20} priority />
+        </div>
+          </button>
+        </div>
         <SidebarOption options={options} />
       </nav>
     </div>
