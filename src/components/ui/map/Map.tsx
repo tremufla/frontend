@@ -90,7 +90,7 @@ export default function Map({ properties }: Props) {
             ] as MapButton[]
           }
           position="topleft"
-          gap="6px"
+          gap="16px"
           marginTop="36px"
         />
       </MapContainer>
