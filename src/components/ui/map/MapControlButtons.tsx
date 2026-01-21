@@ -30,60 +30,56 @@ export default function MapControlButtons({
   const map = useMap();
 
   useEffect(() => {
-    if (!map || !buttons || buttons.length === 0) return;
+    if (!map || buttons.length === 0) return;
 
-    const container = document.createElement('div');
-    // usar classes do Leaflet para herdar aparência/posicionamento
-    container.className = `leaflet-control leaflet-bar custom-map-buttons`;
-    container.style.display = 'flex';
-    container.style.flexDirection = 'column';
-    container.style.gap = gap;
-    container.style.marginTop = marginTop;
+    const controlContainer = document.createElement('div');
+    controlContainer.className = 'leaflet-control leaflet-bar custom-map-buttons';
+    controlContainer.style.display = 'flex';
+    controlContainer.style.flexDirection = 'column';
+    controlContainer.style.gap = gap;
+    controlContainer.style.marginTop = marginTop;
 
-    const makeButton = (b: MapButton) => {
-      const a = document.createElement('a');
-      if (b.id) a.id = b.id;
-      a.innerHTML = b.label;
-      a.href = '#';
-      if (b.title) a.title = b.title;
+    const createControlButton = (btn: MapButton) => {
+      const anchor = document.createElement('a');
+      if (btn.id) anchor.id = btn.id;
+      anchor.innerHTML = btn.label;
+      anchor.href = '#';
+      if (btn.title) anchor.title = btn.title;
 
-      // prevenir que o clique alcance o mapa
-      a.addEventListener('click', (e) => {
+      const onClick = (e: Event) => {
         e.preventDefault();
         e.stopPropagation();
         try {
-          // tentar também usar utilitários do Leaflet
-          if (L && L.DomEvent && typeof L.DomEvent.stop === 'function') {
-            (L.DomEvent.stop as unknown as (ev: Event) => void)(e as unknown as Event);
+          if (L?.DomEvent && typeof L.DomEvent.stop === 'function') {
+            (L.DomEvent.stop as unknown as (ev: Event) => void)(e);
           }
         } catch {
-          // noop
+          // ignore
         }
-        b.onClick();
-      });
+        btn.onClick();
+      };
 
-      return a;
+      anchor.addEventListener('click', onClick);
+      return anchor;
     };
 
-    buttons.forEach((b) => container.appendChild(makeButton(b)));
+    buttons.forEach((b) => controlContainer.appendChild(createControlButton(b)));
 
-    // anexar ao canto escolhido; se não encontrar, usar o container do mapa
-    const mapContainer = map.getContainer();
-    const cornerSelector = position === 'topleft'
-      ? '.leaflet-top.leaflet-left'
-      : position === 'topright'
-      ? '.leaflet-top.leaflet-right'
-      : position === 'bottomleft'
-      ? '.leaflet-bottom.leaflet-left'
-      : '.leaflet-bottom.leaflet-right';
+    const leafletContainer = map.getContainer();
+    const cornerSelector =
+      position === 'topleft'
+        ? '.leaflet-top.leaflet-left'
+        : position === 'topright'
+        ? '.leaflet-top.leaflet-right'
+        : position === 'bottomleft'
+        ? '.leaflet-bottom.leaflet-left'
+        : '.leaflet-bottom.leaflet-right';
 
-    const corner = mapContainer.querySelector(cornerSelector) as HTMLElement | null;
-    const parent = corner ?? mapContainer;
-    parent.appendChild(container);
+    const corner = leafletContainer.querySelector(cornerSelector) as HTMLElement | null;
+    const parent = corner ?? leafletContainer;
+    parent.appendChild(controlContainer);
 
-    return () => {
-      container.remove();
-    };
+    return () => controlContainer.remove();
   }, [map, buttons, gap, marginTop, position]);
 
   return null;
