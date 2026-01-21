@@ -66,26 +66,19 @@ export default function Map({ properties }: Props) {
 
       // Criar container e botões diretamente no DOM do mapa para evitar problemas de tipagem
       const container = document.createElement('div');
-      container.className = 'leaflet-bar custom-map-buttons';
-      // push below the default zoom control (adjust as needed)
-      container.style.marginTop = '100px';
+      // usar classes do Leaflet para herdar estilos padrão e alinhamento com outros controles
+      container.className = 'leaflet-control leaflet-bar custom-map-buttons';
+      // organizar verticalmente e adicionar gap para separar dos outros controles
       container.style.display = 'flex';
       container.style.flexDirection = 'column';
-      // adiciona espaçamento entre os botões
-      container.style.gap = '28px';
+      container.style.gap = '8px';
 
       const makeButton = (label: string, title: string, onClick: () => void) => {
         const a = document.createElement('a');
         a.innerHTML = label;
         a.href = '#';
         a.title = title;
-        a.style.cursor = 'pointer';
-        a.style.display = 'block';
-        a.style.padding = '6px 8px';
-        a.style.textAlign = 'center';
-        a.style.background = 'white';
-        a.style.borderBottom = '1px solid rgba(0,0,0,0.1)';
-
+        // não sobrescrever o estilo do Leaflet (bordas, cursor, etc.) — usar estilos padrão
         a.addEventListener('click', (e) => {
           e.preventDefault();
           onClick();
