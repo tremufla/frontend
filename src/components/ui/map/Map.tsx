@@ -80,7 +80,19 @@ export default function Map({ properties }: Props) {
         a.title = title;
         // não sobrescrever o estilo do Leaflet (bordas, cursor, etc.) — usar estilos padrão
         a.addEventListener('click', (e) => {
+          // impedir navegação padrão
           e.preventDefault();
+          // impedir que o evento suba para o mapa (que tem um listener de click)
+          e.stopPropagation();
+          if (L && L.DomEvent && typeof L.DomEvent.stop === 'function') {
+            // garantir que o Leaflet também pare o evento (compatibilidade)
+            try {
+              // L.DomEvent.stop aceita um Event, usar cast seguro
+              (L.DomEvent.stop as unknown as (ev: Event) => void)(e as unknown as Event);
+            } catch {
+              // noop
+            }
+          }
           onClick();
         });
 
