@@ -9,7 +9,7 @@ import type { LatLng } from 'leaflet';
 import { useEffect } from 'react';
 import FarmerIcon from './FarmerIcon';
 import MapControlButtons, { MapButton } from './MapControlButtons';
-import { ZoomIn, ZoomOut } from 'lucide-react';
+import { CalendarPlus2, MapPin } from 'lucide-react';
 import { PropertyModel } from '@/domain/models/property-model';
 import { ApplicationScheduleByRiskModel } from '@/domain/models/application-schedule-by-risk-model';
 
@@ -85,8 +85,8 @@ export default function Map({ properties }: Props) {
         <MapControlButtons
           buttons={
             [
-              { icon: <ZoomIn className="w-6 h-6" />, title: 'Zoom in', onClick: () => console.log('zoom in') },
-              { icon: <ZoomOut className="w-6 h-6" />, title: 'Zoom out', onClick: () => console.log('zoom out') },
+              { icon: <MapPin className="w-6 h-6" />, title: 'Zoom in', onClick: () => console.log('zoom in') },
+              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Zoom out', onClick: () => console.log('zoom out') },
             ] as MapButton[]
           }
           position="topleft"
