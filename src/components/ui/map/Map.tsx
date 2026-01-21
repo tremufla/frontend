@@ -82,10 +82,12 @@ export default function Map({ properties }: Props) {
         {renderPropertyMarkers(properties)}
         <HandleMapClick />
         <MapControlButtons
-          buttons={[
-            { label: 'Btn 1', title: 'Button 1', onClick: () => console.log('Btn 1 clicked') },
-            { label: 'Btn 2', title: 'Button 2', onClick: () => console.log('Btn 2 clicked') },
-          ] as MapButton[]}
+          buttons={
+            [
+              { label: 'Btn 1', title: 'Button 1', onClick: () => console.log('Btn 1 clicked') },
+              { label: 'Btn 2', title: 'Button 2', onClick: () => console.log('Btn 2 clicked') },
+            ] as MapButton[]
+          }
           position="topleft"
           gap="8px"
           marginTop="100px"
