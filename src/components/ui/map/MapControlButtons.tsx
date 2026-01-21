@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
@@ -21,12 +21,7 @@ type Props = {
   marginTop?: string;
 };
 
-export default function MapControlButtons({
-  buttons,
-  position = 'topleft',
-  gap = '8px',
-  marginTop = '100px',
-}: Props) {
+export default function MapControlButtons({ buttons, position = 'topleft', gap = '8px', marginTop = '100px' }: Props) {
   const map = useMap();
 
   useEffect(() => {
