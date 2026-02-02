@@ -86,8 +86,20 @@ export default function MapControlButtons({ buttons, position = 'topleft', gap =
     root.render(<ButtonsUI buttons={buttons} gap={gap} />);
 
     return () => {
-      root.unmount();
-      controlContainer.remove();
+      try {
+        setTimeout(() => {
+          try {
+            root.unmount();
+          } catch { }
+          controlContainer.remove();
+        }, 0);
+      } catch {
+        try {
+          root.unmount();
+        } catch { }
+
+        controlContainer.remove();
+      }
     };
   }, [map, buttons, gap, marginTop, position]);
 
