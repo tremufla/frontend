@@ -85,8 +85,8 @@ export default function Map({ properties }: Props) {
         <MapControlButtons
           buttons={
             [
-              { icon: <MapPin className="w-6 h-6" />, title: 'Zoom in', onClick: () => console.log('zoom in') },
-              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Zoom out', onClick: () => console.log('zoom out') },
+              { icon: <MapPin className="w-6 h-6" />, title: 'Meus locais', onClick: () => console.log('meus locais') },
+              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => console.log('agendamentos') },
             ] as MapButton[]
           }
           position="topleft"
