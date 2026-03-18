@@ -12,6 +12,7 @@ import MapControlButtons, { MapButton } from './MapControlButtons';
 import { CalendarPlus2, MapPin } from 'lucide-react';
 import { PropertyModel } from '@/domain/models/property-model';
 import { ApplicationScheduleByRiskModel } from '@/domain/models/application-schedule-by-risk-model';
+import { useGeolocationStore } from '@/store/geolocation-store';
 
 type Props = {
   properties?: PropertyModel[];
@@ -59,11 +60,22 @@ const renderPropertyMarkers = (properties?: PropertyModel[]) => {
 
 export default function Map({ properties }: Props) {
   const { coordinates } = usePropertyStore();
+  const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
+
+  useEffect(() => {
+    fetchPosition();
+  }, [fetchPosition]);
+
+  const userCoordinates: [number, number] | null = userLocation
+    ? [userLocation.latitude, userLocation.longitude]
+    : null;
+
+  const initialCenter: [number, number] = userCoordinates ?? coordinates ?? [0, 0];
 
   return (
     <div className="h-full">
       <MapContainer
-        center={coordinates ?? [0, 0]}
+        center={initialCenter}
         zoom={13}
         scrollWheelZoom={false}
         style={{ height: '100%', width: '100%' }}
@@ -72,6 +84,7 @@ export default function Map({ properties }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {userCoordinates && !coordinates && <CenterMap coordinates={userCoordinates} />}
         {coordinates && (
           <>
             <Marker key={0} position={coordinates} icon={FarmerIcon}>
