@@ -21,7 +21,7 @@ interface SelectLocationProps {
 
 const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
   const { setProperty, setCoordinates } = usePropertyStore();
-  const [locationSelected, setLocationSelected] = useState<string>("");
+  const [locationSelected, setLocationSelected] = useState<string>(locations[0]?.id ?? "");
   const [currentLocation, setCurrentLocation] = useState<{
     id: string;
     name: string;
@@ -29,23 +29,12 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
   } | null>(null);
 
   useEffect(() => {
-    if (currentLocation) {
-      setProperty(currentLocation.id);
-      setLocationSelected(currentLocation.id);
-      setCoordinates([
-        currentLocation.coordinates.latitude,
-        currentLocation.coordinates.longitude,
-      ]);
-    } else if (locations.length > 0) {
-      const firstLocation = locations[0];
-      setProperty(firstLocation.id);
-      setLocationSelected(firstLocation.id);
-      setCoordinates([
-        firstLocation.coordinates.latitude,
-        firstLocation.coordinates.longitude,
-      ]);
-    }
-  }, [locations, setProperty, setCoordinates, currentLocation]);
+    if (locations.length === 0) return;
+    const first = locations[0];
+    setProperty(first.id);
+    setCoordinates([first.coordinates.latitude, first.coordinates.longitude]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!navigator?.geolocation) return;
@@ -56,19 +45,24 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
       (pos) => {
         if (!mounted) return;
         const { latitude, longitude } = pos.coords;
-        setCurrentLocation({
+        const loc = {
           id: "current-location",
           name: "Minha localização",
           coordinates: { latitude, longitude },
-        });
+        };
+        setCurrentLocation(loc);
+        setLocationSelected("current-location");
+        setProperty("current-location");
+        setCoordinates([latitude, longitude]);
       },
-      () => { },
+      () => {},
       { enableHighAccuracy: true, maximumAge: 1000 * 60 * 5 }
     );
 
     return () => {
       mounted = false;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (value: string) => {
@@ -84,13 +78,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({ locations }) => {
 
     const selectedLocation = locations.find((location) => location.id === value);
 
-    const latitude = selectedLocation?.coordinates.latitude ?? 0;
-    const longitude = selectedLocation?.coordinates.longitude ?? 0;
-
     if (selectedLocation) {
       setProperty(selectedLocation.id);
       setLocationSelected(selectedLocation.id);
-      setCoordinates([latitude, longitude]);
+      setCoordinates([
+        selectedLocation.coordinates.latitude,
+        selectedLocation.coordinates.longitude,
+      ]);
     }
   };
 
