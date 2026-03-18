@@ -6,13 +6,14 @@ import { usePropertyStore } from '@/store/property-store';
 import FarmIcon from './FarmIcon';
 import * as L from 'leaflet';
 import type { LatLng } from 'leaflet';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import FarmerIcon from './FarmerIcon';
 import MapControlButtons, { MapButton } from './MapControlButtons';
 import { CalendarPlus2, MapPin } from 'lucide-react';
 import { PropertyModel } from '@/domain/models/property-model';
 import { ApplicationScheduleByRiskModel } from '@/domain/models/application-schedule-by-risk-model';
 import { useGeolocationStore } from '@/store/geolocation-store';
+import MyLocationsModal from './MyLocationsModal';
 
 type Props = {
   properties?: PropertyModel[];
@@ -59,8 +60,10 @@ const renderPropertyMarkers = (properties?: PropertyModel[]) => {
 };
 
 export default function Map({ properties }: Props) {
-  const { coordinates } = usePropertyStore();
+  const { coordinates, setCoordinates } = usePropertyStore();
   const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
+  const [myLocationsOpen, setMyLocationsOpen] = useState(false);
+  const [focusCenter, setFocusCenter] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     fetchPosition();
@@ -74,6 +77,20 @@ export default function Map({ properties }: Props) {
 
   return (
     <div className="h-full">
+      <MyLocationsModal
+        open={myLocationsOpen}
+        onOpenChange={setMyLocationsOpen}
+        properties={properties}
+        userLocation={userCoordinates}
+        onSelect={(property) => {
+          setFocusCenter([property.latitude, property.longitude]);
+          setMyLocationsOpen(false);
+        }}
+        onSelectUserLocation={() => {
+          if (userCoordinates) setCoordinates(userCoordinates);
+          setMyLocationsOpen(false);
+        }}
+      />
       <MapContainer
         center={initialCenter}
         zoom={13}
@@ -84,6 +101,7 @@ export default function Map({ properties }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {focusCenter && <CenterMap coordinates={focusCenter} />}
         {userCoordinates && !coordinates && (
           <>
             <Marker position={userCoordinates} icon={FarmerIcon}>
@@ -105,7 +123,7 @@ export default function Map({ properties }: Props) {
         <MapControlButtons
           buttons={
             [
-              { icon: <MapPin className="w-6 h-6" />, title: 'Meus locais', onClick: () => console.log('meus locais') },
+              { icon: <MapPin className="w-6 h-6" />, title: 'Meus locais', onClick: () => setMyLocationsOpen(true) },
               { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => console.log('agendamentos') },
             ] as MapButton[]
           }
