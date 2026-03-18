@@ -84,7 +84,14 @@ export default function Map({ properties }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {userCoordinates && !coordinates && <CenterMap coordinates={userCoordinates} />}
+        {userCoordinates && !coordinates && (
+          <>
+            <Marker position={userCoordinates} icon={FarmerIcon}>
+              <Popup>Sua localização</Popup>
+            </Marker>
+            <CenterMap coordinates={userCoordinates} />
+          </>
+        )}
         {coordinates && (
           <>
             <Marker key={0} position={coordinates} icon={FarmerIcon}>
