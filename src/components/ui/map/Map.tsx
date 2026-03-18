@@ -6,7 +6,7 @@ import { usePropertyStore } from '@/store/property-store';
 import FarmIcon from './FarmIcon';
 import * as L from 'leaflet';
 import type { LatLng } from 'leaflet';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import FarmerIcon from './FarmerIcon';
 import MapControlButtons, { MapButton } from './MapControlButtons';
 import { CalendarPlus2, MapPin } from 'lucide-react';
@@ -20,9 +20,8 @@ type Props = {
   scheduleData?: ApplicationScheduleByRiskModel;
 };
 
-const HandleMapClick = () => {
+const HandleMapClick = ({ onMapClick }: { onMapClick: (coords: [number, number]) => void }) => {
   const { setCoordinates, setProperty } = usePropertyStore();
-
   const map = useMap();
 
   useEffect(() => {
@@ -32,6 +31,7 @@ const HandleMapClick = () => {
       const { lat, lng }: LatLng = event.latlng;
       setProperty(null);
       setCoordinates([lat, lng]);
+      onMapClick([lat, lng]);
     };
 
     map.on('click', handleClick);
@@ -39,7 +39,7 @@ const HandleMapClick = () => {
     return () => {
       map.off('click', handleClick);
     };
-  }, [map, setProperty, setCoordinates]);
+  }, [map, setProperty, setCoordinates, onMapClick]);
 
   return null;
 };
@@ -63,17 +63,31 @@ export default function Map({ properties }: Props) {
   const { coordinates, setCoordinates } = usePropertyStore();
   const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
   const [myLocationsOpen, setMyLocationsOpen] = useState(false);
-  const [focusCenter, setFocusCenter] = useState<[number, number] | null>(null);
+  const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
 
   useEffect(() => {
     fetchPosition();
   }, [fetchPosition]);
 
+  useEffect(() => {
+    if (userLocation && !mapCenter) {
+      setMapCenter([userLocation.latitude, userLocation.longitude]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLocation]);
+
   const userCoordinates: [number, number] | null = userLocation
     ? [userLocation.latitude, userLocation.longitude]
     : null;
 
-  const initialCenter: [number, number] = userCoordinates ?? coordinates ?? [0, 0];
+  const handleMapClick = useCallback(
+    (coords: [number, number]) => {
+      setMapCenter(coords);
+    },
+    []
+  );
+
+  const initialCenter: [number, number] = mapCenter ?? coordinates ?? [0, 0];
 
   return (
     <div className="h-full">
@@ -83,11 +97,14 @@ export default function Map({ properties }: Props) {
         properties={properties}
         userLocation={userCoordinates}
         onSelect={(property) => {
-          setFocusCenter([property.latitude, property.longitude]);
+          setMapCenter([property.latitude, property.longitude]);
           setMyLocationsOpen(false);
         }}
         onSelectUserLocation={() => {
-          if (userCoordinates) setCoordinates(userCoordinates);
+          if (userCoordinates) {
+            setCoordinates(userCoordinates);
+            setMapCenter(userCoordinates);
+          }
           setMyLocationsOpen(false);
         }}
       />
@@ -101,25 +118,19 @@ export default function Map({ properties }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {focusCenter && <CenterMap coordinates={focusCenter} />}
+        {mapCenter && <CenterMap coordinates={mapCenter} />}
         {userCoordinates && !coordinates && (
-          <>
-            <Marker position={userCoordinates} icon={FarmerIcon}>
-              <Popup>Sua localização</Popup>
-            </Marker>
-            <CenterMap coordinates={userCoordinates} />
-          </>
+          <Marker position={userCoordinates} icon={FarmerIcon}>
+            <Popup>Sua localização</Popup>
+          </Marker>
         )}
         {coordinates && (
-          <>
-            <Marker key={0} position={coordinates} icon={FarmerIcon}>
-              <Popup>Local selecionado</Popup>
-            </Marker>
-            <CenterMap coordinates={coordinates} />
-          </>
+          <Marker key={0} position={coordinates} icon={FarmerIcon}>
+            <Popup>Local selecionado</Popup>
+          </Marker>
         )}
         {renderPropertyMarkers(properties)}
-        <HandleMapClick />
+        <HandleMapClick onMapClick={handleMapClick} />
         <MapControlButtons
           buttons={
             [
