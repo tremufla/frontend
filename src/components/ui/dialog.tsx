@@ -84,10 +84,10 @@ export function DialogContent({ children, className }: { children: React.ReactNo
 
   return open
     ? createPortal(
-        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4">
+        <div className="fixed inset-0 z-[2000] flex items-start sm:items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/40" onClick={() => setOpen(false)} />
 
-          <div className={'relative z-50 w-full max-w-lg rounded-lg bg-popover p-6 shadow-lg ' + (className ?? '')}>
+          <div className={'relative z-[2000] w-full max-w-lg rounded-lg bg-popover p-6 shadow-lg ' + (className ?? '')}>
             {children}
           </div>
         </div>,
