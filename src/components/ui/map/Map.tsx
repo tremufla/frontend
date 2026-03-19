@@ -64,6 +64,7 @@ export default function Map({ properties }: Props) {
   const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
   const [myLocationsOpen, setMyLocationsOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<string | 'user-location' | undefined>(undefined);
 
   useEffect(() => {
     fetchPosition();
@@ -96,12 +97,15 @@ export default function Map({ properties }: Props) {
         onOpenChange={setMyLocationsOpen}
         properties={properties}
         userLocation={userCoordinates}
+        selectedId={selectedLocationId}
         onSelect={(property) => {
+          setSelectedLocationId(property.id);
           setMapCenter([property.latitude, property.longitude]);
           setMyLocationsOpen(false);
         }}
         onSelectUserLocation={() => {
           if (userCoordinates) {
+            setSelectedLocationId('user-location');
             setCoordinates(userCoordinates);
             setMapCenter(userCoordinates);
           }
