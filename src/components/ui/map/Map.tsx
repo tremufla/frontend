@@ -14,6 +14,7 @@ import { PropertyModel } from '@/domain/models/property-model';
 import { ApplicationScheduleByRiskModel } from '@/domain/models/application-schedule-by-risk-model';
 import { useGeolocationStore } from '@/store/geolocation-store';
 import MyLocationsModal from './MyLocationsModal';
+import NovaPulverizacaoModal from '@/components/ui/modals/NovaPulverizacaoModal';
 
 type Props = {
   properties?: PropertyModel[];
@@ -63,6 +64,7 @@ export default function Map({ properties }: Props) {
   const { coordinates, setCoordinates } = usePropertyStore();
   const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
   const [myLocationsOpen, setMyLocationsOpen] = useState(false);
+  const [novaPulverizacaoOpen, setNovaPulverizacaoOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [selectedLocationId, setSelectedLocationId] = useState<string | 'user-location' | undefined>(undefined);
 
@@ -92,6 +94,11 @@ export default function Map({ properties }: Props) {
 
   return (
     <div className="h-full">
+      <NovaPulverizacaoModal
+        open={novaPulverizacaoOpen}
+        onOpenChange={setNovaPulverizacaoOpen}
+        properties={properties ?? []}
+      />
       <MyLocationsModal
         open={myLocationsOpen}
         onOpenChange={setMyLocationsOpen}
@@ -139,7 +146,7 @@ export default function Map({ properties }: Props) {
           buttons={
             [
               { icon: <MapPin className="w-6 h-6" />, title: 'Meus locais', onClick: () => setMyLocationsOpen(true) },
-              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => console.log('agendamentos') },
+              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => setNovaPulverizacaoOpen(true) },
             ] as MapButton[]
           }
           position="topleft"
