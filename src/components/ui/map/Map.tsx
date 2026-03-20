@@ -15,6 +15,7 @@ import { ApplicationScheduleByRiskModel } from '@/domain/models/application-sche
 import { useGeolocationStore } from '@/store/geolocation-store';
 import MyLocationsModal from './MyLocationsModal';
 import NovaPulverizacaoModal from '@/components/ui/modals/NovaPulverizacaoModal';
+import { toast } from 'sonner';
 
 type Props = {
   properties?: PropertyModel[];
@@ -98,6 +99,17 @@ export default function Map({ properties }: Props) {
         open={novaPulverizacaoOpen}
         onOpenChange={setNovaPulverizacaoOpen}
         properties={properties ?? []}
+        onSubmit={(data) => {
+          if (process.env.NODE_ENV === 'development') {
+            toast('Pulverização agendada (mock):', {
+              description: (
+                <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
+                  <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                </pre>
+              ),
+            });
+          }
+        }}
       />
       <MyLocationsModal
         open={myLocationsOpen}
