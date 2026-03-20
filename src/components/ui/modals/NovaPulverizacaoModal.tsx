@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -58,19 +59,13 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-type SubmitPayload = Omit<FormValues, 'propertyId'> & {
-  propertyId?: string;
-  coordinates?: { latitude: number; longitude: number };
-};
-
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   properties: PropertyModel[];
-  onSubmit?: (data: SubmitPayload) => void | Promise<void>;
 };
 
-export default function NovaPulverizacaoModal({ open, onOpenChange, properties, onSubmit }: Props) {
+export default function NovaPulverizacaoModal({ open, onOpenChange, properties }: Props) {
   const { coordinates: userLocation } = useGeolocationStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -80,13 +75,28 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties, 
     const { propertyId, ...rest } = data;
     const isCurrentLocation = propertyId === CURRENT_LOCATION_ID;
 
-    const payload: SubmitPayload = {
+    const payload = {
       ...rest,
       ...(!isCurrentLocation && propertyId ? { propertyId } : {}),
       ...(isCurrentLocation && userLocation ? { coordinates: userLocation } : {}),
     };
 
-    await onSubmit?.(payload);
+    if (process.env.NODE_ENV === 'development') {
+      toast('Pulverização agendada (mock):', {
+        description: (
+          <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
+            <code className="text-white">{JSON.stringify(payload, null, 2)}</code>
+          </pre>
+        ),
+      });
+    } else {
+      await fetch('/api/pulverizacoes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    }
+
     form.reset();
     onOpenChange(false);
   };
