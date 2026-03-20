@@ -99,7 +99,7 @@ export default function Map({ properties }: Props) {
         open={novaPulverizacaoOpen}
         onOpenChange={setNovaPulverizacaoOpen}
         properties={properties ?? []}
-        onSubmit={(data) => {
+        onSubmit={async (data) => {
           if (process.env.NODE_ENV === 'development') {
             toast('Pulverização agendada (mock):', {
               description: (
@@ -107,6 +107,12 @@ export default function Map({ properties }: Props) {
                   <code className="text-white">{JSON.stringify(data, null, 2)}</code>
                 </pre>
               ),
+            });
+          } else {
+            await fetch('/api/pulverizacoes', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data),
             });
           }
         }}
