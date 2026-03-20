@@ -50,7 +50,7 @@ const TIPOS_PULVERIZACAO = [
 ];
 
 const FormSchema = z.object({
-  propertyId: z.string({ required_error: 'Selecione a propriedade' }).min(1, 'Selecione a propriedade'),
+  propertyId: z.string().optional(),
   tipoPulverizacao: z.string({ required_error: 'Selecione o tipo de pulverização' }).min(1, 'Selecione o tipo de pulverização'),
   data: z.date({ required_error: 'Escolha a data' }),
   principiosAtivos: z.string().optional(),
@@ -58,7 +58,8 @@ const FormSchema = z.object({
 
 type FormValues = z.infer<typeof FormSchema>;
 
-type SubmitPayload = FormValues & {
+type SubmitPayload = Omit<FormValues, 'propertyId'> & {
+  propertyId?: string;
   coordinates?: { latitude: number; longitude: number };
 };
 
@@ -76,10 +77,15 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties, 
   });
 
   const handleSubmit = async (data: FormValues) => {
-    const payload: SubmitPayload = { ...data };
-    if (data.propertyId === CURRENT_LOCATION_ID && userLocation) {
-      payload.coordinates = userLocation;
-    }
+    const { propertyId, ...rest } = data;
+    const isCurrentLocation = propertyId === CURRENT_LOCATION_ID;
+
+    const payload: SubmitPayload = {
+      ...rest,
+      ...(!isCurrentLocation && propertyId ? { propertyId } : {}),
+      ...(isCurrentLocation && userLocation ? { coordinates: userLocation } : {}),
+    };
+
     await onSubmit?.(payload);
     form.reset();
     onOpenChange(false);
