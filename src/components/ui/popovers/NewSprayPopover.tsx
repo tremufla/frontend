@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "../button";
 import { Plus } from "@mynaui/icons-react";
-import { CalendarForm } from "../calendar/PulverizationCalendar";
+import { CalendarForm } from "../calendar/SprayCalendar";
 
-const NewPulverizationPopover: React.FC = () => {
+const NewSprayPopover: React.FC = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,4 +25,4 @@ const NewPulverizationPopover: React.FC = () => {
   );
 };
 
-export default NewPulverizationPopover;
+export default NewSprayPopover;

@@ -40,7 +40,7 @@ import { cn } from '@/lib/utils';
 
 const CURRENT_LOCATION_ID = 'current-location';
 
-const TIPOS_PULVERIZACAO = [
+const SPRAY_TYPES = [
   { value: 'herbicida', label: 'Herbicida' },
   { value: 'fungicida', label: 'Fungicida' },
   { value: 'inseticida', label: 'Inseticida' },
@@ -52,9 +52,9 @@ const TIPOS_PULVERIZACAO = [
 
 const FormSchema = z.object({
   propertyId: z.string().optional(),
-  tipoPulverizacao: z.string({ required_error: 'Selecione o tipo de pulverização' }).min(1, 'Selecione o tipo de pulverização'),
-  data: z.date({ required_error: 'Escolha a data' }),
-  principiosAtivos: z.string().optional(),
+  sprayType: z.string({ required_error: 'Selecione o tipo de pulverização' }).min(1, 'Selecione o tipo de pulverização'),
+  date: z.date({ required_error: 'Escolha a data' }),
+  activeIngredients: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -65,7 +65,7 @@ type Props = {
   properties: PropertyModel[];
 };
 
-export default function NovaPulverizacaoModal({ open, onOpenChange, properties }: Props) {
+export default function NewSprayModal({ open, onOpenChange, properties }: Props) {
   const { coordinates: userLocation } = useGeolocationStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -90,7 +90,7 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties }
         ),
       });
     } else {
-      await fetch('/api/pulverizacoes', {
+      await fetch('/api/sprays', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -151,7 +151,7 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties }
 
             <FormField
               control={form.control}
-              name="tipoPulverizacao"
+              name="sprayType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo de pulverização</FormLabel>
@@ -162,9 +162,9 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties }
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {TIPOS_PULVERIZACAO.map((tipo) => (
-                        <SelectItem key={tipo.value} value={tipo.value}>
-                          {tipo.label}
+                      {SPRAY_TYPES.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -176,7 +176,7 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties }
 
             <FormField
               control={form.control}
-              name="data"
+              name="date"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Data da pulverização</FormLabel>
@@ -217,7 +217,7 @@ export default function NovaPulverizacaoModal({ open, onOpenChange, properties }
 
             <FormField
               control={form.control}
-              name="principiosAtivos"
+              name="activeIngredients"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Princípios ativos a serem utilizados</FormLabel>

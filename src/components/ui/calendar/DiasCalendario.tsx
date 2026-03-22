@@ -5,28 +5,28 @@ interface DiasCalendarioProps {
     dia: number;
     mesAtual: boolean;
   }[];
-  pulverizacoes: Record<number, Pulverizacao>;
+  sprays: Record<number, Spray>;
 }
 
-interface Pulverizacao {
-  tipo: string;
-  produto: string;
-  horario: string;
+interface Spray {
+  type: string;
+  product: string;
+  time: string;
 }
 
-const DiasCalendario: React.FC<DiasCalendarioProps> = ({ dias, pulverizacoes }) => {
+const DiasCalendario: React.FC<DiasCalendarioProps> = ({ dias, sprays }) => {
   return (
     <div className="grid grid-cols-7">
       {dias.map((diaInfo, index) => {
-        const pulverizacao = diaInfo.mesAtual
-          ? pulverizacoes[diaInfo.dia as keyof typeof pulverizacoes]
+        const spray = diaInfo.mesAtual
+          ? sprays[diaInfo.dia as keyof typeof sprays]
           : null;
 
         return (
           <DiaCalendario
             key={index}
             diaInfo={diaInfo}
-            pulverizacao={pulverizacao}
+            spray={spray}
           />
         );
       })}

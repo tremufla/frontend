@@ -1,18 +1,18 @@
-import { CreatePulverizacao } from '@/domain/usecases/create-pulverizacao';
-import { CreatePulverizacaoParams, PulverizacaoModel } from '@/domain/models/pulverizacao-model';
+import { CreateSpray } from '@/domain/usecases/create-spray';
+import { CreateSprayParams, SprayModel } from '@/domain/models/spray-model';
 import { InvalidCredentialsError } from '@/domain/errors/invalid-credentials-error';
 import { BadRequestError } from '@/domain/errors/bad-request-error';
 import { UnexpectedError } from '@/domain/errors/unexpected-error';
 import { faker } from '@faker-js/faker';
 import { HttpPostClient } from '../protocols/http/http-post-client';
 
-export class RemoteCreatePulverizacao implements CreatePulverizacao {
+export class RemoteCreateSpray implements CreateSpray {
   constructor(
     private readonly url: string,
-    private readonly httpPostClient: HttpPostClient<CreatePulverizacaoParams, PulverizacaoModel>
+    private readonly httpPostClient: HttpPostClient<CreateSprayParams, SprayModel>
   ) {}
 
-  async create(data: CreatePulverizacaoParams): Promise<PulverizacaoModel> {
+  async create(data: CreateSprayParams): Promise<SprayModel> {
     const isDev = process.env.IS_DEV === 'true';
 
     if (isDev) {

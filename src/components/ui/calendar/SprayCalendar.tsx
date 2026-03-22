@@ -15,7 +15,7 @@ import { CalendarInputForm } from "../form/CalendarInputForm";
 import { usePropertyStore } from "@/store/property-store";
 
 const FormSchema = z.object({
-  data: z.date({
+  date: z.date({
     required_error: "É necessário informar uma data, para agendar a pulverização",
   }),
   property: z.string().optional(),
@@ -48,7 +48,7 @@ export function CalendarForm() {
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
-          name="data"
+          name="date"
           render={({ field }) => (
             <CalendarInputForm
               value={field.value}

@@ -1,7 +1,7 @@
-import { CalendarioPulverizacoes } from "@/components/calendario-pulverizacoes";
+import { SprayCalendar } from "@/components/spray-calendar";
 
-export default function MapaPulverizacoes() {
+export default function SchedulePage() {
   return (
-    <CalendarioPulverizacoes />
+    <SprayCalendar />
   );
 }

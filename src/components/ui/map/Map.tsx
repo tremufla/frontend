@@ -14,7 +14,7 @@ import { PropertyModel } from '@/domain/models/property-model';
 import { ApplicationScheduleByRiskModel } from '@/domain/models/application-schedule-by-risk-model';
 import { useGeolocationStore } from '@/store/geolocation-store';
 import MyLocationsModal from './MyLocationsModal';
-import NovaPulverizacaoModal from '@/components/ui/modals/NovaPulverizacaoModal';
+import NewSprayModal from '@/components/ui/modals/NewSprayModal';
 
 type Props = {
   properties?: PropertyModel[];
@@ -64,7 +64,7 @@ export default function Map({ properties }: Props) {
   const { coordinates, setCoordinates } = usePropertyStore();
   const { coordinates: userLocation, fetchPosition } = useGeolocationStore();
   const [myLocationsOpen, setMyLocationsOpen] = useState(false);
-  const [novaPulverizacaoOpen, setNovaPulverizacaoOpen] = useState(false);
+  const [newSprayOpen, setNewSprayOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [selectedLocationId, setSelectedLocationId] = useState<string | 'user-location' | undefined>(undefined);
 
@@ -94,9 +94,9 @@ export default function Map({ properties }: Props) {
 
   return (
     <div className="h-full">
-      <NovaPulverizacaoModal
-        open={novaPulverizacaoOpen}
-        onOpenChange={setNovaPulverizacaoOpen}
+      <NewSprayModal
+        open={newSprayOpen}
+        onOpenChange={setNewSprayOpen}
         properties={properties ?? []}
       />
       <MyLocationsModal
@@ -146,7 +146,7 @@ export default function Map({ properties }: Props) {
           buttons={
             [
               { icon: <MapPin className="w-6 h-6" />, title: 'Meus locais', onClick: () => setMyLocationsOpen(true) },
-              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => setNovaPulverizacaoOpen(true) },
+              { icon: <CalendarPlus2 className="w-6 h-6" />, title: 'Agendamentos', onClick: () => setNewSprayOpen(true) },
             ] as MapButton[]
           }
           position="topleft"

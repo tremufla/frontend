@@ -2,7 +2,7 @@
 
 import React from 'react'
 import SelectLocation from '@/components/ui/selects/SelectLocation'
-import NewPulverizationPopover from '@/components/ui/popovers/NewPulverizationPopover'
+import NewSprayPopover from '@/components/ui/popovers/NewSprayPopover'
 
 export type Location = {
   id: string
@@ -14,7 +14,7 @@ export default function HeaderClient({ locations }: { locations: Location[] }) {
   return (
     <>
       <SelectLocation locations={locations} />
-      <NewPulverizationPopover />
+      <NewSprayPopover />
     </>
   )
 }
