@@ -83,7 +83,7 @@ export default function NewSprayModal({ open, onOpenChange, properties }: Props)
     };
 
     try {
-      if (false) {
+      if (process.env.NODE_ENV === 'development') {
         toast('Pulverização agendada (mock):', {
           description: (
             <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
