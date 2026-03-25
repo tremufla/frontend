@@ -5,5 +5,5 @@ export const apiRoutes = {
   propertyLean: "/property/lean",
   updateProperty: "/property",
   applicationScheduleMapByRisk: `/application-schedule/map-by-risk`,
-  createSpray: `/pulverizacao`,
+  createSpray: `/sprays`,
 }
