@@ -35,6 +35,7 @@ import { PropertyModel } from '@/domain/models/property-model';
 import { useGeolocationStore } from '@/store/geolocation-store';
 import { CalendarIcon, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { handleApiError } from '@/lib/handle-api-error';
 import { toast } from 'sonner';
 
 const CURRENT_LOCATION_ID = 'current-location';
@@ -80,24 +81,34 @@ export default function NewSprayModal({ open, onOpenChange, properties }: Props)
       ...(isCurrentLocation && userLocation ? { coordinates: userLocation } : {}),
     };
 
-    if (process.env.NODE_ENV === 'development') {
-      toast('Pulverização agendada (mock):', {
-        description: (
-          <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
-            <code className="text-white">{JSON.stringify(payload, null, 2)}</code>
-          </pre>
-        ),
-      });
-    } else {
-      await fetch('/api/sprays', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-    }
+    try {
+      if (process.env.NODE_ENV === 'development') {
+        toast('Pulverização agendada (mock):', {
+          description: (
+            <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
+              <code className="text-white">{JSON.stringify(payload, null, 2)}</code>
+            </pre>
+          ),
+        });
+      } else {
+        const res = await fetch('/api/sprays', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
 
-    form.reset();
-    onOpenChange(false);
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          handleApiError(body, form.setError);
+          return;
+        }
+      }
+
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      handleApiError(error, form.setError);
+    }
   };
 
   const handleCancel = () => {
