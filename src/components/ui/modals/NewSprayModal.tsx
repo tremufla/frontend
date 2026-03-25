@@ -5,8 +5,6 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { toast } from 'sonner';
-
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import Dialog, {
@@ -37,17 +35,18 @@ import { PropertyModel } from '@/domain/models/property-model';
 import { useGeolocationStore } from '@/store/geolocation-store';
 import { CalendarIcon, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const CURRENT_LOCATION_ID = 'current-location';
 
 const SPRAY_TYPES = [
-  { value: 'herbicida', label: 'Herbicida' },
-  { value: 'fungicida', label: 'Fungicida' },
-  { value: 'inseticida', label: 'Inseticida' },
-  { value: 'acaricida', label: 'Acaricida' },
-  { value: 'nematicida', label: 'Nematicida' },
-  { value: 'fertilizante_foliar', label: 'Fertilizante foliar' },
-  { value: 'outro', label: 'Outro' },
+  { value: 'HERBICIDE', label: 'Herbicida' },
+  { value: 'FUNGICIDE', label: 'Fungicida' },
+  { value: 'INSECTICIDE', label: 'Inseticida' },
+  { value: 'ACARICIDE', label: 'Acaricida' },
+  { value: 'NEMATICIDE', label: 'Nematicida' },
+  { value: 'FOLIAR_FERTILIZER', label: 'Fertilizante foliar' },
+  { value: 'OTHER', label: 'Outro' },
 ];
 
 const FormSchema = z.object({
