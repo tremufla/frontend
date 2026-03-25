@@ -1,6 +1,6 @@
 export class UnexpectedError extends Error {
   constructor () {
-    super('Algo de errodo aconteceu. Tente novamente em brave.')
+    super('Ocorreu um erro interno. Tente novamente em breve.')
     this.name = 'UnexpectedError'
   }
 }

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { InvalidCredentialsError } from '@/domain/errors/invalid-credentials-error'
-import { BadRequestError } from '@/domain/errors/bad-request-error'
+import { ValidationError } from '@/domain/errors/validation-error'
+import { BusinessRuleError } from '@/domain/errors/business-rule-error'
+import { NotFoundError } from '@/domain/errors/not-found-error'
+import { toProblemDetails } from '@/app/api/_handlers/to-problem-details'
 
 type MakeUsecase<T = unknown> = () => { findById: (id: string) => Promise<T> }
 
@@ -20,12 +23,19 @@ export const createFindHandler = <T = unknown>(makeUsecase: MakeUsecase<T>) => {
         return NextResponse.json({ error: err.message }, { status: 401 })
       }
 
-      if (err instanceof BadRequestError) {
-        return NextResponse.json({ error: err.message }, { status: 400 })
+      if (err instanceof ValidationError) {
+        return NextResponse.json(toProblemDetails(400, 'Dados inválidos', { errors: err.errors }), { status: 400 })
       }
 
-      const message = err instanceof Error ? err.message : String(err)
-      return NextResponse.json({ error: message || 'unknown error' }, { status: 500 })
+      if (err instanceof BusinessRuleError) {
+        return NextResponse.json(toProblemDetails(400, 'Regra de negócio violada', { detail: err.detail }), { status: 400 })
+      }
+
+      if (err instanceof NotFoundError) {
+        return NextResponse.json(toProblemDetails(404, 'Não encontrado'), { status: 404 })
+      }
+
+      return NextResponse.json(toProblemDetails(500, 'Erro interno'), { status: 500 })
     }
   }
 }
