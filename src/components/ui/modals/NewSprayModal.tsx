@@ -36,6 +36,7 @@ import { useGeolocationStore } from '@/store/geolocation-store';
 import { CalendarIcon, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { handleApiError } from '@/lib/handle-api-error';
+import { throwProblemDetails } from '@/domain/errors/throw-problem-details';
 import { toast } from 'sonner';
 
 const CURRENT_LOCATION_ID = 'current-location';
@@ -99,8 +100,7 @@ export default function NewSprayModal({ open, onOpenChange, properties }: Props)
 
         if (!res.ok) {
           const body = await res.json().catch(() => null);
-          handleApiError(body, form.setError);
-          return;
+          throwProblemDetails(body);
         }
       }
 
