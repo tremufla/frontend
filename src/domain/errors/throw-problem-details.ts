@@ -20,7 +20,6 @@ export function throwProblemDetails(body: unknown): never {
   }
 
   if (status === 400 && title === 'Regra de negócio violada') {
-    console.log('Business rule violation:', detail);
     throw new BusinessRuleError(detail ?? 'Operação não permitida.')
   }
 

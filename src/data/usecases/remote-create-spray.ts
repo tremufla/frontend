@@ -14,8 +14,6 @@ export class RemoteCreateSpray implements CreateSpray {
   async create(data: CreateSprayParams): Promise<SprayModel> {
     const response = await this.httpPostClient.post({ url: this.url, body: data });
 
-    console.log('Response from create spray API:', response);
-
     switch (response.statusCode) {
       case 201:
       case 200:

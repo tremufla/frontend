@@ -20,8 +20,6 @@ export function handleApiError<T extends FieldValues>(
   setError?: UseFormSetError<T>
 ): void {
   if (error instanceof ValidationError) {
-    console.log('Validation errors:', error.errors)
-
     if (setError) {
       for (const [field, message] of Object.entries(error.errors)) {
         setError(field as FieldPath<T>, { type: 'server', message })
