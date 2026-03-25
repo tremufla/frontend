@@ -83,7 +83,7 @@ export default function NewSprayModal({ open, onOpenChange, properties }: Props)
     };
 
     try {
-      if (process.env.NODE_ENV === 'development') {
+      if (false) {
         toast('Pulverização agendada (mock):', {
           description: (
             <pre className="mt-2 rounded-md bg-slate-950 p-4 whitespace-pre-wrap break-all">
@@ -104,6 +104,7 @@ export default function NewSprayModal({ open, onOpenChange, properties }: Props)
         }
       }
 
+      toast.success('Pulverização agendada com sucesso!');
       form.reset();
       onOpenChange(false);
     } catch (error) {
